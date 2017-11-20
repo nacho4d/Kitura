@@ -248,6 +248,7 @@ extension StaticFileServer {
         private func ifRangeHeaderShouldPreventPartialReponse(requestHeaders headers: Headers, fileAttributes: [FileAttributeKey : Any]) -> Bool {
             // If-Range is optional
             guard let ifRange = headers["If-Range"], !ifRange.isEmpty else {
+                print("----returning false2")
                 return false
             }
             // If-Range can be one of two values: ETag or Last-Modified but not both.
@@ -256,16 +257,25 @@ extension StaticFileServer {
                 if let etag = CacheRelatedHeadersSetter.calculateETag(from: fileAttributes),
                     !etag.isEmpty,
                     ifRange.contains(etag) {
+                    print("----returning false1")
                     return false
                 }
+                print("----returning true1")
                 return true
             }
+            let dateFromIfRange = FileServer.date(from: ifRange)
+            let dateFromAttributes = fileAttributes[FileAttributeKey.modificationDate] as? Date
+            print("-----date from IfRange   : \(dateFromIfRange?.debugDescription ?? "---nil")")
+            print("-----date from attributes: \(dateFromAttributes?.debugDescription ?? "---nil")")
+
             // If-Range as Last-Modified
             if let ifRangeLastModified = FileServer.date(from: ifRange),
                 let lastModified = fileAttributes[FileAttributeKey.modificationDate] as? Date,
                 round(lastModified.timeIntervalSince1970) > round(ifRangeLastModified.timeIntervalSince1970) {
+                print("----returning true")
                 return true
             }
+            print("----returning false")
             return false
         }
 
@@ -273,6 +283,7 @@ extension StaticFileServer {
         static func date(from httpDate: String) -> Date? {
             let df = DateFormatter()
             df.dateFormat = "EEE',' dd' 'MMM' 'yyyy HH':'mm':'ss zzz"
+            print("-----date from httpDate: \(df.date(from:httpDate)?.debugDescription ?? "---nil")")
             return df.date(from:httpDate)
         }
 
