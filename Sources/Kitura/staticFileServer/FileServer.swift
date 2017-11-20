@@ -271,7 +271,7 @@ extension StaticFileServer {
             // If-Range as Last-Modified
             if let ifRangeLastModified = FileServer.date(from: ifRange),
                 let lastModified = fileAttributes[FileAttributeKey.modificationDate] as? Date,
-                round(lastModified.timeIntervalSince1970) > round(ifRangeLastModified.timeIntervalSince1970) {
+                floor(lastModified.timeIntervalSince1970) > floor(ifRangeLastModified.timeIntervalSince1970) {
                 print("----returning true")
                 return true
             }
