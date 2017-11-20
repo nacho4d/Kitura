@@ -266,7 +266,9 @@ extension StaticFileServer {
             let dateFromIfRange = FileServer.date(from: ifRange)
             let dateFromAttributes = fileAttributes[FileAttributeKey.modificationDate] as? Date
             print("-----date from IfRange   : \(dateFromIfRange?.debugDescription ?? "---nil")")
+            print("                    floor: \(dateFromIfRange?.timeIntervalSince1970 ?? 0)")
             print("-----date from attributes: \(dateFromAttributes?.debugDescription ?? "---nil")")
+            print("                    floor: \(dateFromAttributes?.timeIntervalSince1970 ?? 0)")
 
             // If-Range as Last-Modified
             if let ifRangeLastModified = FileServer.date(from: ifRange),
@@ -283,7 +285,7 @@ extension StaticFileServer {
         static func date(from httpDate: String) -> Date? {
             let df = DateFormatter()
             df.dateFormat = "EEE',' dd' 'MMM' 'yyyy HH':'mm':'ss zzz"
-            print("-----date from httpDate: \(df.date(from:httpDate)?.debugDescription ?? "---nil")")
+            //print("-----date from httpDate: \(df.date(from:httpDate)?.debugDescription ?? "---nil")")
             return df.date(from:httpDate)
         }
 
